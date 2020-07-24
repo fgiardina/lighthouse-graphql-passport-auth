@@ -1,10 +1,12 @@
 input LoginInput {
     username: String!
     password: String!
+    provider: String!
 }
 
 input RefreshTokenInput {
     refresh_token: String
+    provider: String!
 }
 
 type AuthPayload {
@@ -26,6 +28,7 @@ type ForgotPasswordResponse {
 
 input ForgotPasswordInput {
     email: String!
+    provider: String!
 }
 
 input NewPasswordWithCodeInput {

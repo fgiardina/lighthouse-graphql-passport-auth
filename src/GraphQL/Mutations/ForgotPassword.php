@@ -21,16 +21,31 @@ class ForgotPassword
      */
     public function resolve($rootValue, array $args, GraphQLContext $context = null, ResolveInfo $resolveInfo)
     {
-        $response = $this->broker()->sendResetLink(['email' => $args['data']['email']]);
-        if ($response == Password::RESET_LINK_SENT) {
+
+        $user = null;
+        if ( $args['data']['provider'] == "api") {
+            $user = \App\User::where('email' , $args['data']['email'])->first();
+        }
+
+        if ($args['data']['provider'] == "admin-api") {
+            $user = \App\Admin::where('email', $args['data']['email'])->first();
+        }
+
+        if (!$user) {
             return [
-                'status' => 'EMAIL_SENT',
-                'message' => trans($response)
+                'status' => 'EMAIL_NOT_SENT',
+                'message' => $args['data']['email'] . " not found - provider: " . $args['data']['provider']
             ];
         }
+
+        try {
+            $this->broker()->sendResetLink(['email' => $args['data']['email']]);
+        } catch (\Throwable $th) {}
+
         return [
-            'status' => 'EMAIL_NOT_SENT',
-            'message' => trans($response)
+            'status' => 'EMAIL_SENT',
+            'message' => $args['data']['email']
         ];
     }
+
 }

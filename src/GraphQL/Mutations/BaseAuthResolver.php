@@ -18,6 +18,7 @@ class BaseAuthResolver
         $credentials['client_id'] = config('lighthouse-graphql-passport.client_id');
         $credentials['client_secret'] = config('lighthouse-graphql-passport.client_secret');
         $credentials['grant_type'] = $grantType;
+
         return $credentials;
     }
 
